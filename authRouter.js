@@ -2,12 +2,14 @@ const Router = require('express')
 const router = new Router()
 const controller = require('./authController')
 const {check} = require("express-validator")
+const authMiddleware =require('./middlewaree/authmiddlewaree')
+const roleMiddleware = require('./middlewaree/roleMiddleware')
 
 router.post('/registration', [
-    check('username', "Ogtateri anuny chi karox datark linel").notEmpty(),
-    check('password', "Gaxtnabery petq e lini 4 ev 10 simvolic").isLength({min: 4, max: 10})
+    check('username', "Username cannot be empty").notEmpty(),
+    check('password', "Password must contain 4-10 characters").isLength({min: 4, max: 10})
     ], controller.registration)
 router.post('/login', controller.login)
-router.get('/users', controller.getUsers)
+router.get('/users', roleMiddleware( ['USER', "ADMIN"]), controller.getUsers)
    
 module.exports = router
